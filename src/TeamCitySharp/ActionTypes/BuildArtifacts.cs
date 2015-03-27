@@ -87,6 +87,39 @@ namespace TeamCitySharp.ActionTypes
                 }
                 list.Add(string.Format("/repository/download/{0}/{1}/{2}", _buildConfigId, buildSpecification, artifact));
             }
+
+            return new ArtifactCollection(_caller, list);
+        }
+
+        public ArtifactCollection SpecificationByBuildId(string buildId)
+        {
+            var xml = _caller.GetRaw(string.Format("/repository/download/{0}/{1}.tcbuildid/teamcity-ivy.xml", _buildConfigId, buildId));
+
+            var document = new XmlDocument();
+            document.LoadXml(xml);
+            var artifactNodes = document.SelectNodes("//artifact");
+            if (artifactNodes == null)
+            {
+                return null;
+            }
+            var list = new List<string>();
+            foreach (XmlNode node in artifactNodes)
+            {
+                var nameNode = node.SelectSingleNode("@name");
+                var extensionNode = node.SelectSingleNode("@ext");
+                var artifact = string.Empty;
+                if (nameNode != null)
+                {
+                    artifact = nameNode.Value;
+                }
+                if (extensionNode != null)
+                {
+                    artifact += "." + extensionNode.Value;
+                }
+
+                list.Add(string.Format("/repository/download/{0}/{1}.tcbuildid/{2}", _buildConfigId, buildId, artifact));
+            }
+
             return new ArtifactCollection(_caller, list);
         }
     }
