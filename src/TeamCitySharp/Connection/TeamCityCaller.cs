@@ -67,7 +67,9 @@ namespace TeamCitySharp.Connection
                 throw new ArgumentException("If you are not acting as a guest you must supply userName and password");
             }
 
-            urlPart = System.Web.HttpUtility.UrlEncode(urlPart);
+            // Removing as I'm encoding beforehand
+            // urlPart = System.Web.HttpUtility.UrlEncode(urlPart);
+
             if (string.IsNullOrEmpty(urlPart))
             {
                 throw new ArgumentException("Url must be specfied");
@@ -83,9 +85,8 @@ namespace TeamCitySharp.Connection
 
             try
             {
-                CreateHttpClient(_configuration.UserName, _configuration.Password, HttpContentTypes.ApplicationJson).GetAsFile(url, tempFileName);
+                CreateHttpClient(_configuration.UserName, _configuration.Password, HttpContentTypes.ApplicationJson).GetAsFile(url.Replace("%2f", "/"), tempFileName);
                 downloadHandler.Invoke(tempFileName);
-
             }
             finally
             {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Xml;
-
 using TeamCitySharp.Connection;
 
 namespace TeamCitySharp.ActionTypes
@@ -117,7 +117,7 @@ namespace TeamCitySharp.ActionTypes
                     artifact += "." + extensionNode.Value;
                 }
 
-                list.Add(string.Format("/repository/download/{0}/{1}.tcbuildid/{2}", _buildConfigId, buildId, artifact));
+                list.Add(HttpUtility.UrlEncode(string.Format("/repository/download/{0}/{1}.tcbuildid/{2}", _buildConfigId, buildId, artifact)));
             }
 
             return new ArtifactCollection(_caller, list);
@@ -160,10 +160,11 @@ namespace TeamCitySharp.ActionTypes
             foreach (var url in _urls)
             {
                 // user probably didnt use to artifact url generating functions
-                Debug.Assert(url.StartsWith("/repository/download/"));
+                // Debug.Assert(url.StartsWith("/repository/download/"));
 
                 // figure out local filename
-                var parts = url.Split('/').Skip(5).ToArray();
+                var rawUrl = HttpUtility.UrlDecode(url);
+                var parts = rawUrl.Split('/').Skip(5).ToArray();
                 var destination = flatten
                     ? parts.Last()
                     : string.Join(Path.DirectorySeparatorChar.ToString(), parts);

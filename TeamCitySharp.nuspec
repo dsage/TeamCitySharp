@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>TeamCitySharp</id>
-    <version>0.3.6.1</version>
+    <version>0.3.6.7</version>
     <authors>Paul Stack</authors>
     <owners>Paul Stack</owners>
     <licenseUrl>http://stack72.mit-license.org/</licenseUrl>
